@@ -1,6 +1,8 @@
 package org.oddlama.vane.admin;
 
+import org.bukkit.entity.Creeper;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -11,6 +13,7 @@ import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
@@ -57,6 +60,23 @@ public class WorldProtection extends Listener<Admin> {
         return !entity.hasPermission(permission);
     }
 
+    private Player causing_player(final Creeper creeper) {
+        final var target = creeper.getTarget();
+        if (target instanceof Player) {
+            return (Player) target;
+        }
+
+        final var cause = creeper.getLastDamageCause();
+        if (cause instanceof EntityDamageByEntityEvent) {
+            final var damage_event = (EntityDamageByEntityEvent) cause;
+            if (damage_event.getDamager() instanceof Player) {
+                return (Player) damage_event.getDamager();
+            }
+        }
+
+        return null;
+    }
+
     /* ************************ blocks ************************ */
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -95,6 +115,18 @@ public class WorldProtection extends Listener<Admin> {
     public void on_entity_combust_by_entity(EntityCombustByEntityEvent event) {
         if (deny_modify_world(event.getCombuster())) {
             event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void on_entity_explode(EntityExplodeEvent event) {
+        if (event.getEntityType() != EntityType.CREEPER) {
+            return;
+        }
+
+        final var player = causing_player((Creeper) event.getEntity());
+        if (player != null && deny_modify_world(player)) {
+            event.blockList().clear();
         }
     }
 
