@@ -1,4 +1,4 @@
-## Updating vane to a new minecraft release
+# Updating vane to a new minecraft release
 
 There are some things that need to be done
 to make vane compatible with a new minecraft release.
@@ -49,8 +49,8 @@ to make vane compatible with a new minecraft release.
    ```java
    > Task :vane-core:compileJava FAILED
    /root/projects/vane/vane-core/build/sources/java/org/oddlama/vane/util/Nms.java:143: error: cannot find symbol
-   			final var world_version = SharedConstants.getCurrentVersion().getWorldVersion();
-   																			^
+           final var world_version = SharedConstants.getCurrentVersion().getWorldVersion();
+                                                                           ^
    symbol:   method getWorldVersion()
    location: interface WorldVersion
    ```
@@ -116,22 +116,22 @@ to make vane compatible with a new minecraft release.
     Build one more time `./gradlew build`, and start a test server
     with the latest paper build.
     Disable resource pack distribution.
-	Generate the resource pack with `vane generate_resource_pack`, copy it to your client.
+    Generate the resource pack with `vane generate_resource_pack`, copy it to your client.
 
-	Enter the server. Now it is important to test those parts of vane which interface with
-	the mojang mappings, since those are the most likely to break.
+    Enter the server. Now it is important to test those parts of vane which interface with
+    the mojang mappings, since those are the most likely to break.
 
     - `/customitem give vane_trifles:golden_sickle` should display as a sickle, should work when used on wheat. (Tests custom item registration and event dispatching)
     - Take an elytra in your hand, run `/enchant vane_enchantments:angel`, test whether you can speed up by sneaking. (Tests custom enchantment registration)
     - Duplicate the elytra, go into survival mode (IMPORTANT!) then combine them using an anvil. You should get Angel II.
-	- Take a smithing table, combine the elytra with a netherite ingot. (Test's complex smithing recipe integration)
+    - Take a smithing table, combine the elytra with a netherite ingot. (Test's complex smithing recipe integration)
     - Put some random blocks and items in a chest, place a button next to it and press it. The chest should now be sorted.
 
     Fix issues and make a new commit if necessary.
 
 12. Copy the generated resource pack to `docs/resourcepacks/<new_version>.zip`, and update
-	vane's version number in `build.gradle.kts` (always bump minor version for mojang version updates).
-	Commit and add signed tag: `git commit -S -m 'chore: version bump' && git tag -s -m '' v1.11.0`.
+    vane's version number in `build.gradle.kts` (always bump minor version for mojang version updates).
+    Commit and add signed tag: `git commit -S -m 'chore: version bump' && git tag -s -m '' v1.11.0`.
 
 13. Push to main: `git push && git push --tags && git switch main && git merge --ff-only develop && git push && git switch develop`.
 
@@ -143,6 +143,6 @@ to make vane compatible with a new minecraft release.
     Format can be copied from previous releases,
     see `git log` to see what changed.
     Upload final artifacts to GitHub releases first.
-	Afterwards entertain modrinth.com and hangar.papermc.io.
+    Afterwards entertain modrinth.com and hangar.papermc.io.
 
 Congratulations, you are now awake and can start implementing new features.

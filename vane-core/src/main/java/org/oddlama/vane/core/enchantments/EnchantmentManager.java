@@ -11,8 +11,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
+import org.bukkit.event.entity.VillagerAcquireTradeEvent;
+import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.oddlama.vane.core.Core;
 import org.oddlama.vane.core.Listener;
 import org.oddlama.vane.core.module.Context;
@@ -44,8 +50,47 @@ public class EnchantmentManager extends Listener<Core> {
         Map<Enchantment, Integer> additional_enchantments,
         boolean only_if_enchanted
     ) {
+        if (only_if_enchanted && enchantments_on(item_stack).isEmpty() && additional_enchantments.isEmpty()) {
+            return item_stack;
+        }
         remove_old_lore(item_stack);
         return item_stack;
+    }
+
+    private Map<Enchantment, Integer> enchantments_on(ItemStack item_stack) {
+        final var enchantments = new HashMap<Enchantment, Integer>(item_stack.getEnchantments());
+        final var meta = item_stack.getItemMeta();
+        if (meta instanceof EnchantmentStorageMeta storage_meta) {
+            enchantments.putAll(storage_meta.getStoredEnchants());
+        }
+        return enchantments;
+    }
+
+    private CustomEnchantment<?> custom_enchantment(Enchantment enchantment) {
+        return CustomEnchantment.instances()
+            .stream()
+            .filter(custom_enchantment -> custom_enchantment.key().equals(enchantment.getKey()))
+            .findFirst()
+            .orElse(null);
+    }
+
+    private boolean is_disabled_custom_enchantment(Enchantment enchantment) {
+        final var custom_enchantment = custom_enchantment(enchantment);
+        return custom_enchantment != null && !custom_enchantment.allows_anvil();
+    }
+
+    private boolean is_blocked_table_enchantment(Enchantment enchantment) {
+        final var custom_enchantment = custom_enchantment(enchantment);
+        return custom_enchantment != null && !custom_enchantment.allows_enchanting_table();
+    }
+
+    private boolean is_blocked_trade_enchantment(Enchantment enchantment) {
+        final var custom_enchantment = custom_enchantment(enchantment);
+        return custom_enchantment != null && !custom_enchantment.allows_villager_trades();
+    }
+
+    private boolean has_blocked_trade_enchantment(ItemStack item_stack) {
+        return enchantments_on(item_stack).keySet().stream().anyMatch(this::is_blocked_trade_enchantment);
     }
 
     private void remove_superseded(ItemStack item_stack, Map<Enchantment, Integer> enchantments) {
@@ -122,17 +167,31 @@ public class EnchantmentManager extends Listener<Core> {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void on_enchant_item(final EnchantItemEvent event) {
-        final var map = new HashMap<Enchantment, Integer>(event.getEnchantsToAdd());
-        update_enchanted_item(event.getItem(), map);
+        event.getEnchantsToAdd().keySet().removeIf(this::is_blocked_table_enchantment);
+        update_enchanted_item(event.getItem(), event.getEnchantsToAdd());
     }
 
-    // @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    // public void on_loot_generate(final LootGenerateEvent event) {
-    // 	for (final var item : event.getLoot()) {
-    // 		// Update all item lore in case they are enchanted
-    // 		update_enchanted_item(item, true);
-    // 	}
-    // }
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void on_prepare_item_enchant(final PrepareItemEnchantEvent event) {
+        final var offers = event.getOffers();
+        for (int i = 0; i < offers.length; ++i) {
+            if (offers[i] != null && is_blocked_table_enchantment(offers[i].getEnchantment())) {
+                offers[i] = null;
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void on_prepare_anvil(final PrepareAnvilEvent event) {
+        final var result = event.getResult();
+        if (result == null) {
+            return;
+        }
+
+        if (enchantments_on(result).keySet().stream().anyMatch(this::is_disabled_custom_enchantment)) {
+            event.setResult(null);
+        }
+    }
 
     private MerchantRecipe process_recipe(final MerchantRecipe recipe) {
         var result = recipe.getResult().clone();
@@ -149,27 +208,29 @@ public class EnchantmentManager extends Listener<Core> {
         recipe.getIngredients().forEach(i -> new_recipe.addIngredient(i));
         return new_recipe;
     }
-    // @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    // public void on_acquire_trade(final VillagerAcquireTradeEvent event) {
-    // 	event.setRecipe(process_recipe(event.getRecipe()));
-    // }
 
-    // @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    // public void on_right_click_villager(final PlayerInteractEntityEvent event) {
-    // 	final var entity = event.getRightClicked();
-    // 	if (!(entity instanceof Merchant)) {
-    // 		return;
-    // 	}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void on_acquire_trade(final VillagerAcquireTradeEvent event) {
+        if (has_blocked_trade_enchantment(event.getRecipe().getResult())) {
+            event.setCancelled(true);
+            return;
+        }
 
-    // 	final var merchant = (Merchant) entity;
-    // 	final var recipes = new ArrayList<MerchantRecipe>();
+        event.setRecipe(process_recipe(event.getRecipe()));
+    }
 
-    // 	// Check all recipes
-    // 	for (final var r : merchant.getRecipes()) {
-    // 		recipes.add(process_recipe(r));
-    // 	}
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void on_right_click_villager(final PlayerInteractEntityEvent event) {
+        if (!(event.getRightClicked() instanceof Merchant merchant)) {
+            return;
+        }
 
-    // 	// Update recipes
-    // 	merchant.setRecipes(recipes);
-    // }
+        final var recipes = new ArrayList<MerchantRecipe>();
+        for (final var recipe : merchant.getRecipes()) {
+            if (!has_blocked_trade_enchantment(recipe.getResult())) {
+                recipes.add(process_recipe(recipe));
+            }
+        }
+        merchant.setRecipes(recipes);
+    }
 }

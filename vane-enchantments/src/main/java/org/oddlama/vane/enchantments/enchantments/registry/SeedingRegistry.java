@@ -8,8 +8,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class SeedingRegistry extends CustomEnchantmentRegistry {
 
-    public SeedingRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public SeedingRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("seeding", ItemTypeTagKeys.HOES, 4);
+        this.weight(weight).cost(1, 5, 10, 5);
         this.register(composeEvent);
     }
 }

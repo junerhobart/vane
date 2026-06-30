@@ -13,28 +13,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "rake", max_level = 4, rarity = Rarity.COMMON, treasure = true, target = EnchantmentTarget.TOOL)
+@VaneEnchantment(name = "rake", max_level = 4, rarity = Rarity.COMMON, tradeable = true, target = EnchantmentTarget.TOOL)
 public class Rake extends CustomEnchantment<Enchantments> {
 
     public Rake(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape(" h ", "hbh", " h ")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('h', Material.GOLDEN_HOE)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.RAKE));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

@@ -1,6 +1,5 @@
 package org.oddlama.vane.enchantments.enchantments;
 
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
 import org.bukkit.block.data.type.Leaves;
@@ -12,28 +11,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "leafchopper", rarity = Rarity.COMMON, treasure = true, target = EnchantmentTarget.TOOL)
+@VaneEnchantment(name = "leafchopper", rarity = Rarity.COMMON, tradeable = true, target = EnchantmentTarget.TOOL)
 public class Leafchopper extends CustomEnchantment<Enchantments> {
 
     public Leafchopper(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape(" s ", "sbs", " s ")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('s', Material.SHEARS)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.LEAFCHOPPER));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

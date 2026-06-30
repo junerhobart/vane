@@ -1,5 +1,6 @@
 package org.oddlama.vane.core.config.loot;
 
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import org.bukkit.NamespacedKey;
 import org.oddlama.vane.annotation.config.ConfigBoolean;
@@ -23,6 +24,7 @@ public class LootTables<T extends Module<T>> extends ModuleComponent<T> {
 
     private Supplier<LootTableList> def_loot;
     private String desc;
+    private Predicate<LootDefinition> should_register;
 
     public LootTables(
         final Context<T> context,
@@ -43,10 +45,21 @@ public class LootTables<T extends Module<T>> extends ModuleComponent<T> {
         final Supplier<LootTableList> def_loot,
         final String desc
     ) {
+        this(context, base_loot_key, def_loot, desc, table -> true);
+    }
+
+    public LootTables(
+        final Context<T> context,
+        final NamespacedKey base_loot_key,
+        final Supplier<LootTableList> def_loot,
+        final String desc,
+        final Predicate<LootDefinition> should_register
+    ) {
         super(context);
         this.base_loot_key = base_loot_key;
         this.def_loot = def_loot;
         this.desc = desc;
+        this.should_register = should_register;
     }
 
     public LootTableList config_loot_def() {
@@ -72,6 +85,8 @@ public class LootTables<T extends Module<T>> extends ModuleComponent<T> {
         if (enabled() && config_register_loot) {
             config_loot
                 .tables()
+                .stream()
+                .filter(should_register)
                 .forEach(table -> {
                     final var entries = table.entries();
                     table.affected_tables.forEach(table_key ->

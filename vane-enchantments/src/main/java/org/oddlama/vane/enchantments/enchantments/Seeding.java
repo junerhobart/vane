@@ -8,7 +8,6 @@ import static org.oddlama.vane.util.MaterialUtil.seed_for;
 import static org.oddlama.vane.util.PlayerUtil.seed_block;
 import static org.oddlama.vane.util.PlayerUtil.swing_arm;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,40 +15,22 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(
     name = "seeding",
     max_level = 4,
     rarity = Rarity.COMMON,
-    treasure = true,
+    tradeable = true,
     target = EnchantmentTarget.TOOL
 )
 public class Seeding extends CustomEnchantment<Enchantments> {
 
     public Seeding(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("1 7", "2b6", "345")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('1', Material.PUMPKIN_SEEDS)
-                .set_ingredient('2', Material.CARROT)
-                .set_ingredient('3', Material.WHEAT_SEEDS)
-                .set_ingredient('4', Material.NETHER_WART)
-                .set_ingredient('5', Material.BEETROOT_SEEDS)
-                .set_ingredient('6', Material.POTATO)
-                .set_ingredient('7', Material.MELON_SEEDS)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.SEEDING));
     }
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)

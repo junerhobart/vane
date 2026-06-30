@@ -1,6 +1,5 @@
 package org.oddlama.vane.enchantments.enchantments;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,29 +10,16 @@ import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
 import org.oddlama.vane.core.config.loot.LootDefinition;
 import org.oddlama.vane.core.config.loot.LootTableList;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "hell_bent", rarity = Rarity.COMMON, treasure = true, target = EnchantmentTarget.ARMOR_HEAD)
+@VaneEnchantment(name = "hell_bent", rarity = Rarity.COMMON, tradeable = true, target = EnchantmentTarget.ARMOR_HEAD)
 public class HellBent extends CustomEnchantment<Enchantments> {
 
     public HellBent(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("m", "b", "t")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('t', Material.TURTLE_HELMET)
-                .set_ingredient('m', Material.MUSIC_DISC_PIGSTEP)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.HELL_BENT));
     }
 
     @Override
@@ -44,7 +30,7 @@ public class HellBent extends CustomEnchantment<Enchantments> {
                 .in(LootTables.BASTION_HOGLIN_STABLE)
                 .in(LootTables.BASTION_OTHER)
                 .in(LootTables.BASTION_TREASURE)
-                .add(1.0 / 50, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                .add(1.0 / 50, 1, 1, book())
         );
     }
 

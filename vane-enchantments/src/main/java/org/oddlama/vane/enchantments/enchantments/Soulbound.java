@@ -2,7 +2,6 @@ package org.oddlama.vane.enchantments.enchantments;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -20,12 +19,11 @@ import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
 import org.oddlama.vane.annotation.lang.LangMessage;
 import org.oddlama.vane.core.config.loot.LootDefinition;
 import org.oddlama.vane.core.config.loot.LootTableList;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.data.CooldownData;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.lang.TranslatedMessage;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 import org.oddlama.vane.util.StorageUtil;
 
@@ -55,7 +53,7 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
     public TranslatedMessage lang_drop_cooldown;
 
     public Soulbound(Context<Enchantments> context) {
-        super(context);
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.SOULBOUND));
     }
 
     @Override
@@ -65,28 +63,13 @@ public class Soulbound extends CustomEnchantment<Enchantments> {
     }
 
     @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("cqc", "obe", "rgt")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('c', Material.IRON_CHAIN)
-                .set_ingredient('q', Material.WRITABLE_BOOK)
-                .set_ingredient('o', Material.BONE)
-                .set_ingredient('r', "minecraft:enchanted_book#enchants{minecraft:binding_curse*1}")
-                .set_ingredient('g', Material.GHAST_TEAR)
-                .set_ingredient('t', Material.TOTEM_OF_UNDYING)
-                .set_ingredient('e', Material.ENDER_EYE)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
-        );
-    }
-
-    @Override
     public LootTableList default_loot_tables() {
         return LootTableList.of(
             new LootDefinition("generic")
                 .in(LootTables.BASTION_TREASURE)
-                .add(1.0 / 15, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                .in(LootTables.ANCIENT_CITY)
+                .in(LootTables.END_CITY_TREASURE)
+                .add(1.0 / 15, 1, 1, book())
         );
     }
 

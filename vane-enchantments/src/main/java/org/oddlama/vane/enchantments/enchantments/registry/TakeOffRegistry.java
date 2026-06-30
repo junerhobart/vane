@@ -9,8 +9,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class TakeOffRegistry extends CustomEnchantmentRegistry {
 
-    public TakeOffRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public TakeOffRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("take_off", List.of(ItemTypeKeys.ELYTRA), 3);
+        this.weight(weight).cost(5, 8, 15, 8);
         this.register(composeEvent);
     }
 }

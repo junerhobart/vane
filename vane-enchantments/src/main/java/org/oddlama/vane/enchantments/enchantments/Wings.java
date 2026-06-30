@@ -19,13 +19,12 @@ import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
 import org.oddlama.vane.core.config.loot.LootDefinition;
 import org.oddlama.vane.core.config.loot.LootTableList;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "wings", max_level = 4, rarity = Rarity.RARE, treasure = true, allow_custom = true)
+@VaneEnchantment(name = "wings", max_level = 4, rarity = Rarity.RARE, tradeable = true, allow_custom = true)
 public class Wings extends CustomEnchantment<Enchantments> {
 
     @ConfigIntList(
@@ -39,20 +38,7 @@ public class Wings extends CustomEnchantment<Enchantments> {
     private List<Double> config_boost_strengths;
 
     public Wings(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("m m", "dbd", "r r")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('m', Material.PHANTOM_MEMBRANE)
-                .set_ingredient('d', Material.DISPENSER)
-                .set_ingredient('r', Material.FIREWORK_ROCKET)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.WINGS));
     }
 
     @Override
@@ -68,10 +54,10 @@ public class Wings extends CustomEnchantment<Enchantments> {
                 .in(LootTables.UNDERWATER_RUIN_SMALL)
                 .in(LootTables.VILLAGE_TEMPLE)
                 .in(LootTables.WOODLAND_MANSION)
-                .add(1.0 / 110, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_knowledge")),
+                .add(1.0 / 110, 1, 1, book()),
             new LootDefinition("bastion")
                 .in(LootTables.BASTION_TREASURE)
-                .add(1.0 / 10, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+                .add(1.0 / 10, 1, 1, book())
         );
     }
 

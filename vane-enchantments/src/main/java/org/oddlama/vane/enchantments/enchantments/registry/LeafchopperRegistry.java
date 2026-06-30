@@ -8,8 +8,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class LeafchopperRegistry extends CustomEnchantmentRegistry {
 
-    public LeafchopperRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public LeafchopperRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("leafchopper", ItemTypeTagKeys.AXES, 1);
+        this.weight(weight).cost(1, 5, 10, 5);
         this.register(composeEvent);
     }
 }

@@ -8,8 +8,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class HellBentRegistry extends CustomEnchantmentRegistry {
 
-    public HellBentRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public HellBentRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("hell_bent", ItemTypeTagKeys.ENCHANTABLE_HEAD_ARMOR, 1);
+        this.weight(weight).cost(1, 5, 10, 5);
         this.register(composeEvent);
     }
 }

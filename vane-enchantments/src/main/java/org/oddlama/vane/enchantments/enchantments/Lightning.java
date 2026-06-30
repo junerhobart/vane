@@ -1,6 +1,5 @@
 package org.oddlama.vane.enchantments.enchantments;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -8,14 +7,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.loot.LootTables;
 import org.oddlama.vane.annotation.config.ConfigBoolean;
 import org.oddlama.vane.annotation.config.ConfigInt;
 import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
+import org.oddlama.vane.core.config.loot.LootDefinition;
+import org.oddlama.vane.core.config.loot.LootTableList;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(
@@ -28,7 +29,11 @@ import org.oddlama.vane.enchantments.Enchantments;
 public class Lightning extends CustomEnchantment<Enchantments> {
 
     public Lightning(Context<Enchantments> context) {
-        super(context, false);
+        super(
+            context,
+            EnchantmentDefinitions.LIGHTNING.defaultEnabled(),
+            EnchantmentAcquisition.settings(EnchantmentDefinitions.LIGHTNING)
+        );
     }
 
     @ConfigBoolean(
@@ -44,15 +49,12 @@ public class Lightning extends CustomEnchantment<Enchantments> {
     private boolean config_lightning_rain;
 
     @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("r r", "utu", " b ")
-                .set_ingredient('r', Material.LIGHTNING_ROD)
-                .set_ingredient('t', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('b', Material.BEACON)
-                .set_ingredient('u', Material.TOTEM_OF_UNDYING)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+    public LootTableList default_loot_tables() {
+        return LootTableList.of(
+            new LootDefinition("generic")
+                .in(LootTables.BASTION_TREASURE)
+                .in(LootTables.END_CITY_TREASURE)
+                .add(1.0 / 150, 1, 1, book())
         );
     }
 

@@ -1,20 +1,21 @@
 package org.oddlama.vane.enchantments.enchantments;
 
-import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.loot.LootTables;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import org.oddlama.vane.annotation.config.ConfigDouble;
 import org.oddlama.vane.annotation.config.ConfigDoubleList;
 import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
+import org.oddlama.vane.core.config.loot.LootDefinition;
+import org.oddlama.vane.core.config.loot.LootTableList;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.List;
     name = "grappling_hook",
     max_level = 3,
     rarity = Rarity.UNCOMMON,
-    treasure = true,
+    tradeable = true,
     target = EnchantmentTarget.FISHING_ROD
 )
 public class GrapplingHook extends CustomEnchantment<Enchantments> {
@@ -44,18 +45,15 @@ public class GrapplingHook extends CustomEnchantment<Enchantments> {
     private List<Double> config_strength;
 
     public GrapplingHook(Context<Enchantments> context) {
-        super(context);
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.GRAPPLING_HOOK));
     }
 
     @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("h", "l", "b")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_knowledge")
-                .set_ingredient('l', Material.LEAD)
-                .set_ingredient('h', Material.TRIPWIRE_HOOK)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_knowledge"))
+    public LootTableList default_loot_tables() {
+        return LootTableList.of(
+            new LootDefinition("fishing")
+                .in(LootTables.FISHING_TREASURE)
+                .add(1.0 / 40, 1, 1, book())
         );
     }
 

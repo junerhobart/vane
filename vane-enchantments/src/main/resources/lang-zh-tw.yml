@@ -18,24 +18,6 @@ version: 4
 # language code (ISO 639) and the country code (ISO 3166).
 resource_pack_lang_code: 'zh_tw'
 
-item_ancient_tome:
-  name: "古老的卷軸"
-
-item_enchanted_ancient_tome:
-  name: "古老的卷軸"
-
-item_ancient_tome_of_knowledge:
-  name: "古老知識卷軸"
-
-item_enchanted_ancient_tome_of_knowledge:
-  name: "古老知識卷軸"
-
-item_ancient_tome_of_the_gods:
-  name: "古老神明卷軸"
-
-item_enchanted_ancient_tome_of_the_gods:
-  name: "古老神明卷軸"
-
 enchantment_angel:
   name: "天使"
 

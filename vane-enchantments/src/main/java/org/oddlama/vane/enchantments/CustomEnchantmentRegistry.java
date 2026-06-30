@@ -21,6 +21,12 @@ public abstract class CustomEnchantmentRegistry {
     Key key;
     Component description;
     int max_level;
+    int anvil_cost = 1;
+    int weight = 10;
+    int minimum_cost_base = 1;
+    int minimum_cost_per_level = 5;
+    int maximum_cost_base = 10;
+    int maximum_cost_per_level = 5;
 
     TagKey<ItemType> supported_item_tags;
     List<TypedKey<ItemType>> supported_items = List.of();
@@ -40,6 +46,29 @@ public abstract class CustomEnchantmentRegistry {
         this.description = Component.translatable(String.format(TRANSLATE_KEY, name));
         this.supported_items = supported_items;
         this.max_level = max_level;
+    }
+
+    public CustomEnchantmentRegistry anvil_cost(int anvil_cost) {
+        this.anvil_cost = anvil_cost;
+        return this;
+    }
+
+    public CustomEnchantmentRegistry weight(int weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    public CustomEnchantmentRegistry cost(
+        int minimum_base,
+        int minimum_per_level,
+        int maximum_base,
+        int maximum_per_level
+    ) {
+        this.minimum_cost_base = minimum_base;
+        this.minimum_cost_per_level = minimum_per_level;
+        this.maximum_cost_base = maximum_base;
+        this.maximum_cost_per_level = maximum_per_level;
+        return this;
     }
 
     /**
@@ -87,11 +116,11 @@ public abstract class CustomEnchantmentRegistry {
                             ? RegistrySet.keySet(RegistryKey.ITEM, supported_items)
                             : composeEvent.getOrCreateTag(supported_item_tags)
                     )
-                    .anvilCost(1)
+                    .anvilCost(anvil_cost)
                     .maxLevel(max_level)
-                    .weight(10)
-                    .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(1, 1))
-                    .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(3, 1))
+                    .weight(weight)
+                    .minimumCost(EnchantmentRegistryEntry.EnchantmentCost.of(minimum_cost_base, minimum_cost_per_level))
+                    .maximumCost(EnchantmentRegistryEntry.EnchantmentCost.of(maximum_cost_base, maximum_cost_per_level))
                     .activeSlots(EquipmentSlotGroup.ANY)
                     .exclusiveWith(this.exclusive_with(composeEvent))
             );

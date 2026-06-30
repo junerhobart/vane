@@ -18,30 +18,6 @@ version: 4
 # código de idioma (ISO 639) y el código de país (ISO 3166).
 resource_pack_lang_code: 'es_es'
 
-item_ancient_tome:
-  # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo"
-
-item_enchanted_ancient_tome:
-  # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo encantado"
-
-item_ancient_tome_of_knowledge:
-  # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo del conocimiento"
-
-item_enchanted_ancient_tome_of_knowledge:
-  # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo del conocimiento encantado"
-
-item_ancient_tome_of_the_gods:
-  # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo de los dioses"
-
-item_enchanted_ancient_tome_of_the_gods:
-  # El nombre que se mostrará para esta variante de objeto.
-  name: "Tomo antiguo de los dioses encantado"
-
 enchantment_angel:
   # El nombre que se mostrará para este encantamiento. Se incluirá en un paquete de recursos.
   name: "Ángel"

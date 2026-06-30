@@ -12,8 +12,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class AngelRegistry extends CustomEnchantmentRegistry {
 
-    public AngelRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public AngelRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("angel", List.of(ItemTypeKeys.ELYTRA), 5);
+        this.weight(weight).cost(25, 10, 40, 10);
         this.exclusive_with(List.of(TypedKey.create(RegistryKey.ENCHANTMENT, Key.key(NAMESPACE, "wings")))).register(
                 composeEvent
             );

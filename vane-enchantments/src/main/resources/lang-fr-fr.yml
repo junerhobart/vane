@@ -18,24 +18,6 @@ version: 5
 # language code (ISO 639) and the country code (ISO 3166).
 resource_pack_lang_code: 'fr_fr'
 
-item_ancient_tome:
-  name: "Grimoire antique"
-
-item_enchanted_ancient_tome:
-  name: "Grimoire antique"
-
-item_ancient_tome_of_knowledge:
-  name: "Grimoire antique de Connaissance"
-
-item_enchanted_ancient_tome_of_knowledge:
-  name: "Grimoire antique de Connaissance"
-
-item_ancient_tome_of_the_gods:
-  name: "Grimoire antique des Dieux"
-
-item_enchanted_ancient_tome_of_the_gods:
-  name: "Grimoire antique des Dieux"
-
 enchantment_angel:
   name: "Ange"
 

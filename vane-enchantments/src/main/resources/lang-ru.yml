@@ -18,30 +18,6 @@ version: 4
 # language code (ISO 639) and the country code (ISO 3166).
 resource_pack_lang_code: 'ru_ru'
 
-item_ancient_tome:
-  # The display name of this item variant.
-  name: "Старинный фолиант"
-
-item_enchanted_ancient_tome:
-  # The display name of this item variant.
-  name: "Старинный фолиант"
-
-item_ancient_tome_of_knowledge:
-  # The display name of this item variant.
-  name: "Старинный фолиант знаний"
-
-item_enchanted_ancient_tome_of_knowledge:
-  # The display name of this item variant.
-  name: "Старинный фолиант знаний"
-
-item_ancient_tome_of_the_gods:
-  # The display name of this item variant.
-  name: "Старинный фолиант богов"
-
-item_enchanted_ancient_tome_of_the_gods:
-  # The display name of this item variant.
-  name: "Старинный фолиант богов"
-
 enchantment_angel:
   # The display name of this enchantment. Will be packed into a resource pack.
   name: "Ангел"

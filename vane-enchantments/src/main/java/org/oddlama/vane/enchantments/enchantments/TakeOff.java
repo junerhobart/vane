@@ -5,7 +5,6 @@ import static org.oddlama.vane.util.PlayerUtil.apply_elytra_boost;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,33 +17,19 @@ import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
 import org.oddlama.vane.core.config.loot.LootDefinition;
 import org.oddlama.vane.core.config.loot.LootTableList;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
-@VaneEnchantment(name = "take_off", max_level = 3, rarity = Rarity.UNCOMMON, treasure = true, allow_custom = true)
+@VaneEnchantment(name = "take_off", max_level = 3, rarity = Rarity.UNCOMMON, tradeable = true, allow_custom = true)
 public class TakeOff extends CustomEnchantment<Enchantments> {
 
     @ConfigDoubleList(def = { 0.2, 0.4, 0.6 }, min = 0.0, desc = "Boost strength for each enchantment level.")
     private List<Double> config_boost_strengths;
 
     public TakeOff(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("mbm", "psp")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('m', Material.PHANTOM_MEMBRANE)
-                .set_ingredient('p', Material.PISTON)
-                .set_ingredient('s', Material.SLIME_BLOCK)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.TAKE_OFF));
     }
 
     @Override
@@ -60,7 +45,7 @@ public class TakeOff extends CustomEnchantment<Enchantments> {
                 .in(LootTables.UNDERWATER_RUIN_SMALL)
                 .in(LootTables.VILLAGE_TEMPLE)
                 .in(LootTables.WOODLAND_MANSION)
-                .add(1.0 / 150, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                .add(1.0 / 150, 1, 1, book())
         );
     }
 

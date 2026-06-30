@@ -8,8 +8,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class SouldboundRegistry extends CustomEnchantmentRegistry {
 
-    public SouldboundRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public SouldboundRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("soulbound", ItemTypeTagKeys.ENCHANTABLE_DURABILITY, 1);
+        this.weight(weight).cost(25, 10, 40, 10);
         this.register(composeEvent);
     }
 }

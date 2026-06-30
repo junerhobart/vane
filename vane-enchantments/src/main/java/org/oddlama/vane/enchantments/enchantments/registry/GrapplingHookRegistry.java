@@ -8,8 +8,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class GrapplingHookRegistry extends CustomEnchantmentRegistry {
 
-    public GrapplingHookRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public GrapplingHookRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("grappling_hook", ItemTypeTagKeys.ENCHANTABLE_FISHING, 3);
+        this.weight(weight).cost(5, 8, 15, 8);
         this.register(composeEvent);
     }
 }

@@ -85,6 +85,8 @@ def load_feature_markdown(markdown_file: Path, default_slug: str) -> Feature:
             raise ValueError("metadata contains no icon definition. This is only possible if 'itemlike' is set to determine the icon from the recipe.")
 
     content = markdown_item_pattern.sub(lambda match: item_to_inline_icon(match.group(1)), content)
+    if "icon" not in metadata and metadata.get("itemlike", "").startswith("vane-enchantments:enchantment_"):
+        metadata["icon"] = item_to_icon("minecraft:enchanted_book")
     return Feature(loaded_from=str(markdown_file),
                    metadata=metadata,
                    html_content=markdown.markdown(content, extensions=['tables']))
@@ -97,12 +99,17 @@ def replace_category_variables(s: str, category: dict[str, Any]):
 def deep_get(dictionary, keys):
     return reduce(lambda d, key: d[key], keys.split("."), dictionary)
 
-def get_from_config(resource_key: str) -> dict[str, Any]:
+def get_from_config(resource_key: str, default=None) -> dict[str, Any]:
     try:
         namespace, key = resource_key.split(":", maxsplit=1)
         with open(context.plugins_dir / namespace / "config.yml") as f:
             config = yaml.safe_load(f)
         return deep_get(config, key)
+    except KeyError:
+        if default is not None:
+            return default
+        print(f"Error while trying to get {resource_key} from config")
+        raise
     except:
         print(f"Error while trying to get {resource_key} from config")
         raise
@@ -341,13 +348,13 @@ def render_feature(feature: Feature, index: int, count: int) -> str:
     html = html.replace("{{ accordion.body }}",    "border" + (" border-t-0" if is_last else " border-b-0"))
 
     if "itemlike" in feature.metadata:
-        recipes = [render_recipe(feature, r) for r in get_from_config(feature.metadata["itemlike"] + ".recipes").values()]
+        recipes = [render_recipe(feature, r) for r in get_from_config(feature.metadata["itemlike"] + ".recipes", default={}).values()]
         if len(recipes) > 0:
             html = html.replace("{{ feature.recipes }}", "\n".join(recipes))
         else:
             html = remove_lines_containing(html, "{{ feature.recipes }}")
 
-        loot = get_from_config(feature.metadata["itemlike"] + ".loot")
+        loot = get_from_config(feature.metadata["itemlike"] + ".loot", default={})
         if len(loot) > 0:
             html = html.replace("{{ feature.loot }}", render_loot_table(loot))
         else:

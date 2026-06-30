@@ -1,7 +1,6 @@
 package org.oddlama.vane.enchantments.enchantments;
 
 import java.util.List;
-import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,10 +12,9 @@ import org.oddlama.vane.annotation.enchantment.Rarity;
 import org.oddlama.vane.annotation.enchantment.VaneEnchantment;
 import org.oddlama.vane.core.config.loot.LootDefinition;
 import org.oddlama.vane.core.config.loot.LootTableList;
-import org.oddlama.vane.core.config.recipes.RecipeList;
-import org.oddlama.vane.core.config.recipes.ShapedRecipeDefinition;
 import org.oddlama.vane.core.enchantments.CustomEnchantment;
 import org.oddlama.vane.core.module.Context;
+import org.oddlama.vane.enchantments.EnchantmentDefinitions;
 import org.oddlama.vane.enchantments.Enchantments;
 
 @VaneEnchantment(name = "angel", max_level = 5, rarity = Rarity.VERY_RARE, treasure = true, allow_custom = true)
@@ -38,21 +36,7 @@ public class Angel extends CustomEnchantment<Enchantments> {
     private List<Double> config_speed;
 
     public Angel(Context<Enchantments> context) {
-        super(context);
-    }
-
-    @Override
-    public RecipeList default_recipes() {
-        return RecipeList.of(
-            new ShapedRecipeDefinition("generic")
-                .shape("prp", "mbm", "mdm")
-                .set_ingredient('b', "vane_enchantments:ancient_tome_of_the_gods")
-                .set_ingredient('m', Material.PHANTOM_MEMBRANE)
-                .set_ingredient('d', Material.DRAGON_BREATH)
-                .set_ingredient('p', Material.PUFFERFISH_BUCKET)
-                .set_ingredient('r', Material.FIREWORK_ROCKET)
-                .result(on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
-        );
+        super(context, EnchantmentAcquisition.settings(EnchantmentDefinitions.ANGEL));
     }
 
     @Override
@@ -65,7 +49,7 @@ public class Angel extends CustomEnchantment<Enchantments> {
                 .in(LootTables.STRONGHOLD_LIBRARY)
                 .in(LootTables.UNDERWATER_RUIN_BIG)
                 .in(LootTables.VILLAGE_TEMPLE)
-                .add(1.0 / 250, 1, 1, on("vane_enchantments:enchanted_ancient_tome_of_the_gods"))
+                .add(1.0 / 250, 1, 1, book())
         );
     }
 

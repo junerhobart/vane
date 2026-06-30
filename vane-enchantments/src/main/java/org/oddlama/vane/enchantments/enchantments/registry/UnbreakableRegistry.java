@@ -10,8 +10,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class UnbreakableRegistry extends CustomEnchantmentRegistry {
 
-    public UnbreakableRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public UnbreakableRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("unbreakable", ItemTypeTagKeys.ENCHANTABLE_DURABILITY, 1);
+        this.weight(weight).cost(25, 10, 40, 10);
         this.exclusive_with(List.of(EnchantmentKeys.UNBREAKING, EnchantmentKeys.MENDING));
         this.register(composeEvent);
     }

@@ -8,8 +8,9 @@ import org.oddlama.vane.enchantments.CustomEnchantmentRegistry;
 
 public class RakeRegistry extends CustomEnchantmentRegistry {
 
-    public RakeRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent) {
+    public RakeRegistry(RegistryComposeEvent<Enchantment, EnchantmentRegistryEntry.Builder> composeEvent, int weight) {
         super("rake", ItemTypeTagKeys.HOES, 4);
+        this.weight(weight).cost(1, 5, 10, 5);
         this.register(composeEvent);
     }
 }
