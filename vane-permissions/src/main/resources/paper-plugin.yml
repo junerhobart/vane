@@ -15,3 +15,6 @@ dependencies:
     vane-core:
       required: true
       load: BEFORE
+    LuckPerms:
+      required: false
+      load: BEFORE

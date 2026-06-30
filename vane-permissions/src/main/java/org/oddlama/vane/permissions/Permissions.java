@@ -84,6 +84,7 @@ public class Permissions extends Module<Permissions> {
     // Variables
     public final Map<String, Set<String>> permission_groups = new HashMap<>();
     private final Map<UUID, PermissionAttachment> player_attachments = new HashMap<>();
+    private final LuckPermsGroups luck_perms_groups = new LuckPermsGroups(this);
 
     public Permissions() {
         new org.oddlama.vane.permissions.commands.Permission(this);
@@ -260,6 +261,14 @@ public class Permissions extends Module<Permissions> {
         }
 
         return added;
+    }
+
+    public boolean promote_player_to_group(final OfflinePlayer player, final String group, final CommandSender actor) {
+        if (luck_perms_groups.is_available()) {
+            return luck_perms_groups.add_parent_group(player, group, actor);
+        }
+
+        return add_player_to_group(player, group);
     }
 
     public boolean remove_player_from_group(final OfflinePlayer player, final String group) {

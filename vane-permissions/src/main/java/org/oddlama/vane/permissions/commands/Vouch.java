@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.oddlama.vane.annotation.command.Name;
 import org.oddlama.vane.annotation.config.ConfigString;
@@ -31,7 +32,11 @@ public class Vouch extends Command<Permissions> {
     @LangMessage
     private TranslatedMessage lang_already_vouched;
 
-    @ConfigString(def = "user", desc = "The group to assign to players when someone vouches for them.", metrics = true)
+    @ConfigString(
+        def = "user",
+        desc = "The permission group to assign when a player is vouched for the first time.",
+        metrics = true
+    )
     private String config_vouch_group;
 
     // Persistent storage
@@ -49,7 +54,7 @@ public class Vouch extends Command<Permissions> {
             .then(
                 argument("offline_player", OfflinePlayerArgumentType.offlinePlayer()).executes(ctx -> {
                     vouch_for_player(
-                        (Player) ctx.getSource().getSender(),
+                        ctx.getSource().getSender(),
                         ctx.getArgument("offline_player", OfflinePlayer.class)
                     );
                     return SINGLE_SUCCESS;
@@ -57,21 +62,30 @@ public class Vouch extends Command<Permissions> {
             );
     }
 
-    private void vouch_for_player(final Player sender, final OfflinePlayer vouched_player) {
-        var vouched_by_set = storage_vouched_by.computeIfAbsent(vouched_player.getUniqueId(), k -> new HashSet<>());
+    private String player_name(final OfflinePlayer player) {
+        return "§b" + (player.getName() == null ? player.getUniqueId().toString() : player.getName());
+    }
 
-        if (vouched_by_set.add(sender.getUniqueId())) {
-            // If it was the first one, we assign the group,
-            // otherwise we just record that the player also vouched.
-            if (vouched_by_set.size() == 1) {
-                get_module().add_player_to_group(vouched_player, config_vouch_group);
-            }
-
-            lang_vouched.send(sender, "§b" + vouched_player.getName());
-        } else {
-            lang_already_vouched.send(sender, "§b" + vouched_player.getName());
+    private void vouch_for_player(final CommandSender sender, final OfflinePlayer vouched_player) {
+        if (!(sender instanceof Player)) {
+            get_module().promote_player_to_group(vouched_player, config_vouch_group, sender);
+            lang_vouched.send(sender, player_name(vouched_player));
+            return;
         }
 
+        final var player = (Player) sender;
+        var vouched_by_set = storage_vouched_by.computeIfAbsent(vouched_player.getUniqueId(), k -> new HashSet<>());
+
+        if (!vouched_by_set.add(player.getUniqueId())) {
+            lang_already_vouched.send(sender, player_name(vouched_player));
+            return;
+        }
+
+        if (vouched_by_set.size() == 1) {
+            get_module().promote_player_to_group(vouched_player, config_vouch_group, sender);
+        }
+
+        lang_vouched.send(sender, player_name(vouched_player));
         mark_persistent_storage_dirty();
     }
 }
